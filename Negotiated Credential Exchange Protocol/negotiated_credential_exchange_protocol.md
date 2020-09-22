@@ -124,10 +124,10 @@ In the exchange phase, the two parties proceed to share the credentials with the
       "thid": "<uuid of proposal-message>"
     },
     "@type": "negotiated-credential-exchange/1.0/complete-proposal",
-    "complete-proposal~attach": {
+    "complete-proposal~attach": { // Optional
       "mime-type": "application/json",
       "data": {
-        // Optional
+        // Additional payload
       }
     }
   }
@@ -154,7 +154,10 @@ In the exchange phase, the two parties proceed to share the credentials with the
             "name": "Environmental Certificates",
             "properties": {
               "status": "complete"
-            }
+            },
+            "credentials": [
+              // ... VC/VP payload
+            ]
           }
         ]
       }
@@ -171,7 +174,6 @@ In the exchange phase, the two parties proceed to share the credentials with the
       "thid": "<uuid of proposal-message>"
     },
     "@type": "negotiated-credential-exchange/1.0/accept-update",
-    "updateId": "<uuid of update-context message>",
   }
   ```
 
@@ -384,13 +386,17 @@ Sam notifies Francis as soon as they have sent the sample to Francis. As a proof
     "update-context~attach": {
       "mime-type": "application/json",
       "data": {
-        "contextName": "Send product sample",
-        "properties": {
-          "status": "complete"
-        },
-        "credentials": [
+        "contexts": [
           {
-            // Shipment receipt goes here
+            "contextName": "Send product sample",
+            "properties": {
+              "status": "complete"
+            },
+            "credentials": [
+              {
+                // Shipment receipt goes here
+              }
+            ]
           }
         ]
       }
@@ -415,7 +421,7 @@ Next, Francis verifies the received sample's quality. Francis is satisfied and a
 
 ```JSONC
   {
-    "@id": "e0590c1d-da87-4ec8-bd55-928ac67cfcd8",
+    "@id": "a1524eca-9bf8-4133-825e-c3d0dc325d43",
     "~thread": {
       "thid": "c4d61e49-73b0-4ff4-a76c-3cc2f0d28e69"
     },
