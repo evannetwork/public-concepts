@@ -43,6 +43,7 @@ In the exchange phase, the two parties proceed to share the credentials with the
   - Initiator sends a credential exchange proposal to the receiver.
   - This includes DIDCOMM properties (message id and message type), required credentials for each context and the schema to use. Optionally, it may include any property to be associated with the exchange.
     - For example, the initiator can include proposed deadlines for the context.
+  - For each credential a proof request is added. This proof request specifies the schema of the required credential and the attributes to reveal.
   - Sample: 
   ```JSONC
   {
@@ -63,8 +64,11 @@ In the exchange phase, the two parties proceed to share the credentials with the
             },
             "credentials": [
               {
-                "schema": "<DID of required VC schema>",
-                "required": true
+                "required": true,
+                "proofRequest": {
+                  "schema": "<DID of required VC schema>",
+                  // Other proof request properties
+                }
               }
             ]
           }
@@ -94,14 +98,17 @@ In the exchange phase, the two parties proceed to share the credentials with the
         "contexts": [
           {
             "name": "Environmental Certificates",
+            "responsible": "<DID of receiver>",
             "properties": {
               "dueDate": "2020-02-01 00:00:00", // Receiver wants to make adjustments here
             },
-            "responsible": "<DID of receiver>",
             "credentials": [
               {
-                "schema": "<DID of required VC schema>",
-                "required": true
+                "required": true,
+                "proofRequest": {
+                  "schema": "<DID of required VC schema>",
+                  // Other proof request properties
+                }
               }
             ]
           }
@@ -138,7 +145,7 @@ In the exchange phase, the two parties proceed to share the credentials with the
 
 #### Update context
 
-- The party responsible for a context can update it by sending a `update-context` message with optional attachments.
+- The party responsible for a context can update it by sending a `update-context` message, e.g. providing a required credential.
   ```JSONC
   {
     "@id": "<uuid>",
@@ -156,7 +163,13 @@ In the exchange phase, the two parties proceed to share the credentials with the
               "status": "complete"
             },
             "credentials": [
-              // ... VC/VP payload
+              {
+                // Credential
+                "schema": "<DID of required VC schema>",
+                "proof": {
+                  // ... 
+                }                
+              }
             ]
           }
         ]
@@ -227,8 +240,11 @@ Sam sends an order tracing proposal to Francis. This proposal contains the conte
             "responsible": "did:evan:0x7d6827dEaa1f6d1F8Cf2A72b144e124DB63C0221",
             "credentials": [
               {
-                "schema": "<DID of credential template send-product-sample>",
-                "required": true
+                "required": true,
+                "proofRequest": {
+                  "schema": "<DID of credential template send-product-sample>",
+                  // Other proof request properties
+                }
               }
             ]
           },
@@ -241,8 +257,11 @@ Sam sends an order tracing proposal to Francis. This proposal contains the conte
             "responsible": "did:evan:0x48844deCd9702EDeF6E4e8E8B35092f58D4D8FbF", // DID of customer
             "credentials": [
               {
-                "schema": "<DID of credential template verify-quality>",
-                "required": true
+                "required": true,
+                "proofRequest": {
+                  "schema": "<DID of credential template verify-quality>"
+                  // Other proof request properties
+                }
               }
             ]
           },
@@ -255,8 +274,11 @@ Sam sends an order tracing proposal to Francis. This proposal contains the conte
             "responsible": "did:evan:0x7d6827dEaa1f6d1F8Cf2A72b144e124DB63C0221",
             "credentials": [
               {
-                "schema": "<DID of credential template produce-batch>",
-                "required": true
+                "required": true,
+                "proofRequest": {
+                  "schema": "<DID of credential template produce-batch>"
+                  // Other proof request properties
+                }
               }
             ]
           },
@@ -269,8 +291,11 @@ Sam sends an order tracing proposal to Francis. This proposal contains the conte
             "responsible": "did:evan:0x7d6827dEaa1f6d1F8Cf2A72b144e124DB63C0221",
             "credentials": [
               {
-                "schema": "<DID of credential template ship-order>",
-                "required": true
+                "required": true,
+                "proofRequest": {
+                  "schema": "<DID of credential template ship-order>"
+                  // Other proof request properties
+                }
               }
             ]
           }
@@ -305,8 +330,11 @@ Francis, however, does not agree on the due date of the final delivery and deman
             "responsible": "did:evan:0x7d6827dEaa1f6d1F8Cf2A72b144e124DB63C0221",
             "credentials": [
               {
-                "schema": "<DID of credential template send-product-sample>",
-                "required": true
+                "required": true,
+                "proofRequest": {
+                  "schema": "<DID of credential template send-product-sample>",
+                  // Other proof request properties
+                }
               }
             ]
           },
@@ -319,8 +347,11 @@ Francis, however, does not agree on the due date of the final delivery and deman
             "responsible": "did:evan:0x48844deCd9702EDeF6E4e8E8B35092f58D4D8FbF", // DID of customer
             "credentials": [
               {
-                "schema": "<DID of credential template verify-quality>",
-                "required": true
+                "required": true,
+                "proofRequest": {
+                  "schema": "<DID of credential template verify-quality>"
+                  // Other proof request properties
+                }
               }
             ]
           },
@@ -333,8 +364,11 @@ Francis, however, does not agree on the due date of the final delivery and deman
             "responsible": "did:evan:0x7d6827dEaa1f6d1F8Cf2A72b144e124DB63C0221",
             "credentials": [
               {
-                "schema": "<DID of credential template produce-batch>",
-                "required": true
+                "required": true,
+                "proofRequest": {
+                  "schema": "<DID of credential template produce-batch>"
+                  // Other proof request properties
+                }
               }
             ]
           },
@@ -347,8 +381,11 @@ Francis, however, does not agree on the due date of the final delivery and deman
             "responsible": "did:evan:0x7d6827dEaa1f6d1F8Cf2A72b144e124DB63C0221",
             "credentials": [
               {
-                "schema": "<DID of credential template ship-order>",
-                "required": true
+                "required": true,
+                "proofRequest": {
+                  "schema": "<DID of credential template ship-order>"
+                  // Other proof request properties
+                }
               }
             ]
           }
@@ -394,7 +431,11 @@ Sam notifies Francis as soon as they have sent the sample to Francis. As a proof
             },
             "credentials": [
               {
-                // Shipment receipt goes here
+                // Credential
+                "schema": "<DID of credential template send-product-sample>",,
+                "proof": {
+                  // Shipment receipt
+                }                
               }
             ]
           }
@@ -446,3 +487,4 @@ Once all steps have the status `complete`, the process is considered completed.
 - Revisit negotiation phase and improve data exchange. It would probably be better to only send parts of the data
 the proposal receiver does not agree with / wants to change instead of them sending back the whole proposal in an
 altered form.
+- Dictate proof [request] format or leave it open?
