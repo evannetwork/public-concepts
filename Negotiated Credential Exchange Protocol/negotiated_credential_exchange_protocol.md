@@ -1,55 +1,60 @@
 
-# Negotiated Credential Exchange Protocol
+# Negotiated Presentation Exchange Protocol
 
 ## Summary
-This document describes the Negotiated Credential Exchange Protocol, a two-party protocol for jointly conducting credential exchanges.
+This document describes the Negotiated Presentation Exchange Protocol, a two-party protocol for jointly conducting exchanges of [verified presentations](https://www.w3.org/TR/vc-data-model/#presentations-0).
 
 ## Motivation
-We want to introduce a standardized way for two parties to exchange credentials bidirectionally within different contexts.
+
+<----------------------------->
+Bissal redundant
+<----------------------------->
+
+We want to introduce a standardized way for two parties to exchange presentations bidirectionally within different contexts.
 
 It follows a description of a decentralized, lightweight, and customizable protocol enabling these two parties to jointly conduct this process.
 
 ## Roles
-The Negotiated Credential Exchange Protocol uses two roles: the initiator and the receiver.
+The Negotiated Presentation Exchange Protocol uses two roles: the initiator and the receiver.
 
 This protocol assumes that these two parties have already established an communication channel (e.g. via [DIDComm](https://github.com/hyperledger/aries-rfcs/tree/master/concepts/0005-didcomm)).  
-The initiator is the party that initiates the credential exchange with a credential exchange proposal. They send a list of expected credentials, organized in contexts, to the receiver to arrange an agreement about the exchange process.  
-The receiver is the party that receives such an initial credential exchange proposal and is expected to either agree to the proposed terms or make a counter-proposal.
+The initiator is the party that initiates the presentation exchange with a presentation exchange proposal. They send a list of expected presentations, organized in contexts, to the receiver to arrange an agreement about the exchange process.  
+The receiver is the party that receives such an initial presentation exchange proposal and is expected to either agree to the proposed terms or make a counter-proposal.
 
 ## Tutorial
-The Negotiated Credential Exchange Protocol has two distinct phases:
+The Negotiated Presentation Exchange Protocol has two distinct phases:
 1. Negotation Phase
 2. Exchange Phase
 
 ### Negotiation Phase
-In this initial phase, the two parties negotiate various aspects about the credential exchange process:
-- One or more **contexts** requested credentials are associated to
+In this initial phase, the two parties negotiate various aspects about the presentation exchange process:
+- One or more **contexts** requested presentations are associated to
 - The party **responsible** for providing the data for each context respectively
-- List of **credentials** per context that the receiving party is expecting, each marked as either 'required' or 'optional'
+- List of **presentations** per context that the receiving party is expecting, each marked as either 'required' or 'optional'
 - Additional **properties** associated with individual contexts
 - Additional **properties** associated with the whole exchange
 
-The protocol can be initiated by any of the two parties. The negotiation phase consists of at least one round of proposal and answer, with more rounds taking place if no immediate consensus about the details of the credential exchange can be found.
+The protocol can be initiated by any of the two parties. The negotiation phase consists of at least one round of proposal and answer, with more rounds taking place if no immediate consensus about the details of the presentation exchange can be found.
 
 ### Exchange Phase
-In the exchange phase, the two parties proceed to share the credentials with the other party within the contexts they are responsible for, respectively. Contexts can either be updated sequentially or in parallel. The protocol does not take care of enforcing any particular order of sharing credentials, making the participants responsible for enforcing the correct order of the contexts being processed, if required. Sharing credentials within a context is done via context update messages. The receiving party can either accept the context update or reject it with a reason the other party can understand and act on.
+In the exchange phase, the two parties proceed to share the presentations with the other party within the contexts they are responsible for, respectively. Contexts can either be updated sequentially or in parallel. The protocol does not take care of enforcing any particular order of sharing presentations, making the participants responsible for enforcing the correct order of the contexts being processed, if required. Sharing presentations within a context is done via context update messages. The receiving party can either accept the context update or reject it with a reason the other party can understand and act on.
 
 ## Protocol
 
-### Negotiate Credential Exchange
-!["Flowchart credential exchange proposal"](./img/flowchart_credential_exchange_proposal.svg "Flowchart credential exchange proposal")
+### Negotiate Presentation Exchange
+!["Flowchart presentation exchange proposal"](./img/flowchart_presentation_exchange_proposal.svg "Flowchart presentation exchange proposal")
 
-#### Propose Credential Exchange
-  - Initiator sends a credential exchange proposal to the receiver.
-  - This includes DIDCOMM properties (message id and message type), required credentials for each context and the schema to use. Optionally, it may include any property to be associated with the exchange.
+#### Propose Presentation Exchange
+  - Initiator sends a presentation exchange proposal to the receiver.
+  - This includes DIDCOMM properties (message id and message type), required presentations for each context and the schema to use. Optionally, it may include any property to be associated with the exchange.
     - For example, the initiator can include proposed deadlines for the context.
-  - For each credential a proof request is added. This proof request specifies the schema of the required credential and the attributes to reveal.
+  - For each presentation a proof request is added. This proof request specifies the schema of the credential the presentation is to be derived from and the attributes to reveal.
   - Sample: 
   ```JSONC
   {
     "@id": "<uuid>", // message ID
-    "@type": "negotiated-credential-exchange/1.0/propose-credential-exchange",
-    "propose-credential-exchange~attach": {
+    "@type": "negotiated-presentation-exchange/1.0/propose-presentation-exchange",
+    "propose-presentation-exchange~attach": {
       "mime-type": "application/json",
       "data": {
         "properties": {
@@ -62,7 +67,7 @@ In the exchange phase, the two parties proceed to share the credentials with the
             "properties": {
               "dueDate": "2020-01-01 00:00:00", // Optional
             },
-            "credentials": [
+            "presentations": [
               {
                 "required": true,
                 "proofRequest": {
@@ -79,7 +84,7 @@ In the exchange phase, the two parties proceed to share the credentials with the
   }
   ```
 #### Adjust Proposal
-  - Sending an `adjust-proposal` message serves the purpose of suggesting changes to the proposed credential exchange
+  - Sending an `adjust-proposal` message serves the purpose of suggesting changes to the proposed presentation exchange
   - If the receiver deems the proposal unacceptable and does not want to change it, they can also send an error, exiting the protocol.
   - Sample:
   ```JSONC
@@ -88,7 +93,7 @@ In the exchange phase, the two parties proceed to share the credentials with the
     "~thread": {
       "thid": "<uuid of proposal-message>"
     },
-    "@type": "negotiated-credential-exchange/1.0/adjust-proposal",
+    "@type": "negotiated-presentation-exchange/1.0/adjust-proposal",
     "adjust-proposal~attach": {
       "mime-type": "application/json",
       "data": {
@@ -102,7 +107,7 @@ In the exchange phase, the two parties proceed to share the credentials with the
             "properties": {
               "dueDate": "2020-02-01 00:00:00", // Receiver wants to make adjustments here
             },
-            "credentials": [
+            "presentations": [
               {
                 "required": true,
                 "proofRequest": {
@@ -122,7 +127,7 @@ In the exchange phase, the two parties proceed to share the credentials with the
 #### Complete Proposal
   - If the receiver is accepting the initiator's proposal, they send a `complete-proposal` message and complete the negotiation phase.
   - If the receiver decides to propose adjustements, the initiator receives an `adjust-proposal`. If they accept, they send a `complete-proposal` message to the receiver (including optional payload, like a VC).
-  - If the initiator does not accept, they might send a new `propose-credential-exchange` message or send an error message and exit the protocol.
+  - If the initiator does not accept, they might send a new `propose-presentation-exchange` message or send an error message and exit the protocol.
   - If each party both sent & received a `complete-proposal` message, the negotiation phase is done.
   ```JSONC
   {
@@ -130,7 +135,7 @@ In the exchange phase, the two parties proceed to share the credentials with the
     "~thread": {
       "thid": "<uuid of proposal-message>"
     },
-    "@type": "negotiated-credential-exchange/1.0/complete-proposal",
+    "@type": "negotiated-presentation-exchange/1.0/complete-proposal",
     "complete-proposal~attach": { // Optional
       "mime-type": "application/json",
       "data": {
@@ -145,14 +150,14 @@ In the exchange phase, the two parties proceed to share the credentials with the
 
 #### Update context
 
-- The party responsible for a context can update it by sending a `update-context` message, e.g. providing a required credential.
+- The party responsible for a context can update it by sending a `update-context` message, e.g. providing a required presentation.
   ```JSONC
   {
     "@id": "<uuid>",
     "~thread": {
       "thid": "<uuid of proposal-message>"
     },
-    "@type": "negotiated-credential-exchange/1.0/update-context",
+    "@type": "negotiated-presentation-exchange/1.0/update-context",
     "update-context~attach": {
       "mime-type": "application/json",
       "data": {
@@ -162,9 +167,9 @@ In the exchange phase, the two parties proceed to share the credentials with the
             "properties": {
               "status": "complete"
             },
-            "credentials": [
+            "presentations": [
               {
-                // Credential
+                // presentation
                 "schema": "<DID of required VC schema>",
                 "proof": {
                   // ... 
@@ -186,7 +191,7 @@ In the exchange phase, the two parties proceed to share the credentials with the
     "~thread": {
       "thid": "<uuid of proposal-message>"
     },
-    "@type": "negotiated-credential-exchange/1.0/accept-update",
+    "@type": "negotiated-presentation-exchange/1.0/accept-update",
   }
   ```
 
@@ -197,7 +202,7 @@ In the exchange phase, the two parties proceed to share the credentials with the
     "~thread": {
       "thid": "<uuid of proposal-message>"
     },
-    "@type": "negotiated-credential-exchange/1.0/reject-update",
+    "@type": "negotiated-presentation-exchange/1.0/reject-update",
     "updateId": "<uuid of update-context message>",
     "reason": "Credential is revoked",
     "reject-update~attach":  {
@@ -223,8 +228,8 @@ Sam sends an order tracing proposal to Francis. This proposal contains the conte
 ```JSONC 
   {
     "@id": "c4d61e49-73b0-4ff4-a76c-3cc2f0d28e69",
-    "@type": "negotiated-credential-exchange/1.0/propose-credential-exchange",
-    "propose-credential-exchange~attach": {
+    "@type": "negotiated-presentation-exchange/1.0/propose-presentation-exchange",
+    "propose-presentation-exchange~attach": {
       "mime-type": "application/json",
       "data": {
         "properties": {
@@ -238,7 +243,7 @@ Sam sends an order tracing proposal to Francis. This proposal contains the conte
               "status": "pending"
             },
             "responsible": "did:evan:0x7d6827dEaa1f6d1F8Cf2A72b144e124DB63C0221",
-            "credentials": [
+            "presentations": [
               {
                 "required": true,
                 "proofRequest": {
@@ -255,7 +260,7 @@ Sam sends an order tracing proposal to Francis. This proposal contains the conte
               "status": "pending"
             },
             "responsible": "did:evan:0x48844deCd9702EDeF6E4e8E8B35092f58D4D8FbF", // DID of customer
-            "credentials": [
+            "presentations": [
               {
                 "required": true,
                 "proofRequest": {
@@ -272,7 +277,7 @@ Sam sends an order tracing proposal to Francis. This proposal contains the conte
               "status": "pending"
             },
             "responsible": "did:evan:0x7d6827dEaa1f6d1F8Cf2A72b144e124DB63C0221",
-            "credentials": [
+            "presentations": [
               {
                 "required": true,
                 "proofRequest": {
@@ -289,7 +294,7 @@ Sam sends an order tracing proposal to Francis. This proposal contains the conte
               "status": "pending"
             },
             "responsible": "did:evan:0x7d6827dEaa1f6d1F8Cf2A72b144e124DB63C0221",
-            "credentials": [
+            "presentations": [
               {
                 "required": true,
                 "proofRequest": {
@@ -313,7 +318,7 @@ Francis, however, does not agree on the due date of the final delivery and deman
     "~thread": {
       "thid": "c4d61e49-73b0-4ff4-a76c-3cc2f0d28e69"
     },
-    "@type": "negotiated-credential-exchange/1.0/adjust-proposal",
+    "@type": "negotiated-presentation-exchange/1.0/adjust-proposal",
     "adjust-proposal~attach": {
       "mime-type": "application/json",
       "data": {
@@ -328,7 +333,7 @@ Francis, however, does not agree on the due date of the final delivery and deman
               "status": "pending"
             },
             "responsible": "did:evan:0x7d6827dEaa1f6d1F8Cf2A72b144e124DB63C0221",
-            "credentials": [
+            "presentations": [
               {
                 "required": true,
                 "proofRequest": {
@@ -345,7 +350,7 @@ Francis, however, does not agree on the due date of the final delivery and deman
               "status": "pending"
             },
             "responsible": "did:evan:0x48844deCd9702EDeF6E4e8E8B35092f58D4D8FbF", // DID of customer
-            "credentials": [
+            "presentations": [
               {
                 "required": true,
                 "proofRequest": {
@@ -362,7 +367,7 @@ Francis, however, does not agree on the due date of the final delivery and deman
               "status": "pending"
             },
             "responsible": "did:evan:0x7d6827dEaa1f6d1F8Cf2A72b144e124DB63C0221",
-            "credentials": [
+            "presentations": [
               {
                 "required": true,
                 "proofRequest": {
@@ -379,7 +384,7 @@ Francis, however, does not agree on the due date of the final delivery and deman
               "status": "pending"
             },
             "responsible": "did:evan:0x7d6827dEaa1f6d1F8Cf2A72b144e124DB63C0221",
-            "credentials": [
+            "presentations": [
               {
                 "required": true,
                 "proofRequest": {
@@ -403,7 +408,7 @@ Sam agrees to the modified terms.
     "~thread": {
       "thid": "c4d61e49-73b0-4ff4-a76c-3cc2f0d28e69"
     },
-    "@type": "negotiated-credential-exchange/1.0/complete-proposal",
+    "@type": "negotiated-presentation-exchange/1.0/complete-proposal",
   }
   ```
 
@@ -419,7 +424,7 @@ Sam notifies Francis as soon as they have sent the sample to Francis. As a proof
     "~thread": {
       "thid": "c4d61e49-73b0-4ff4-a76c-3cc2f0d28e69"
     },
-    "@type": "negotiated-credential-exchange/1.0/update-context",
+    "@type": "negotiated-presentation-exchange/1.0/update-context",
     "update-context~attach": {
       "mime-type": "application/json",
       "data": {
@@ -429,10 +434,10 @@ Sam notifies Francis as soon as they have sent the sample to Francis. As a proof
             "properties": {
               "status": "complete"
             },
-            "credentials": [
+            "presentations": [
               {
                 // Credential
-                "schema": "<DID of credential template send-product-sample>",,
+                "schema": "<DID of credential template send-product-sample>",
                 "proof": {
                   // Shipment receipt
                 }                
@@ -453,7 +458,7 @@ Francis accepts Sam's status update.
     "~thread": {
       "thid": "c4d61e49-73b0-4ff4-a76c-3cc2f0d28e69"
     },
-    "@type": "negotiated-credential-exchange/1.0/accept-update",
+    "@type": "negotiated-presentation-exchange/1.0/accept-update",
     "updateId": "e0590c1d-da87-4ec8-bd55-928ac67cfcd8",
   }
 ```
@@ -466,7 +471,7 @@ Next, Francis verifies the received sample's quality. Francis is satisfied and a
     "~thread": {
       "thid": "c4d61e49-73b0-4ff4-a76c-3cc2f0d28e69"
     },
-    "@type": "negotiated-credential-exchange/1.0/update-context",
+    "@type": "negotiated-presentation-exchange/1.0/update-context",
     "update-context~attach": {
       "mime-type": "application/json",
       "data": {
