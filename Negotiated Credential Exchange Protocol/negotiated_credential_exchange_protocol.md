@@ -6,10 +6,6 @@ This document describes the Negotiated Credential Exchange Protocol, a two-party
 
 ## Motivation
 
-<----------------------------->
-Bissal redundant
-<----------------------------->
-
 We want to introduce a standardized way for two parties to exchange credentials bidirectionally within different contexts.
 
 It follows a description of a decentralized, lightweight, and customizable protocol enabling these two parties to jointly conduct this process.
