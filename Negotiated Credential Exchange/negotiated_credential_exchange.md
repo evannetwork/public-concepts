@@ -11,14 +11,14 @@ We want to introduce a standardized way for two parties to exchange credentials 
 It follows a description of a decentralized, lightweight, and customizable workflow enabling these two parties to jointly conduct this process.
 
 ## Roles
-The Negotiated Credential Exchange Protocol uses two roles: the initiator and the receiver.
+Negotiated Credential Exchange uses two roles: the initiator and the receiver.
 
 This workflow assumes that these two parties have already established an communication channel (e.g. via [DIDComm](https://github.com/hyperledger/aries-rfcs/tree/master/concepts/0005-didcomm)).  
 The initiator is the party that initiates the credential exchange with a credential exchange proposal. They send a list of expected credentials, organized in contexts, to the receiver to arrange an agreement about the exchange process.  
 The receiver is the party that receives such an initial credential exchange proposal and is expected to either agree to the proposed terms or make a counter-proposal.
 
 ## Tutorial
-The Negotiated Credential Exchange Protocol has two distinct phases:
+Negotiated Credential Exchange has two distinct phases:
 1. Negotation Phase
 2. Exchange Phase
 
@@ -37,7 +37,7 @@ The negotiation phase can be initiated by any of the two parties. It consists of
 ### Exchange Phase
 In the exchange phase, the two parties proceed to share the credentials with the other party within the contexts they are responsible for, respectively. Contexts can either be updated sequentially or in parallel. NCE does not take care of enforcing any particular order of sharing credentials, making the participants responsible for enforcing the correct order of the contexts being processed, if required. Sharing credentials within a context is done via context update messages. The receiving party can either accept the context update or reject it with a reason the other party can understand and act on.
 
-## Protocol
+## Workflow
 
 ### Negotiate Credential Exchange
 !["Flowchart credential exchange proposal"](./img/flowchart_credential_exchange_proposal.svg "Flowchart credential exchange proposal")
