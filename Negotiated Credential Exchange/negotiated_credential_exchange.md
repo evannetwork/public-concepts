@@ -40,7 +40,12 @@ In the exchange phase, the two parties proceed to share the credentials with the
 ## Workflow
 
 ### Negotiate Credential Exchange
-!["Flowchart credential exchange proposal"](./img/flowchart_credential_exchange_proposal.svg "Flowchart credential exchange proposal")
+The following flowchart pictures the different stages and messages of the negotiation phase.
+!["Flowchart credential exchange proposal"](./img/flowchart_credential_exchange_proposal.svg "Flowchart credential exchange proposal")  
+
+
+As this chart might be hard to read at first, the following flowchart pictures the happy path of a negotiation with one round of `propose` and `adjust`.  
+!["Flowchart credential exchange proposal"](./img/flowchart_credential_exchange_proposal_happy_path.svg "Flowchart credential exchange proposal")
 
 #### Propose Credential Exchange
   - Initiator sends a credential exchange proposal to the receiver.
