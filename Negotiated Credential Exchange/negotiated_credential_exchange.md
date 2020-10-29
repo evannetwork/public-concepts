@@ -51,7 +51,7 @@ As this chart might be hard to read at first, the following flowchart pictures t
   - Initiator sends a credential exchange proposal to the receiver.
   - This includes DIDCOMM properties (message id and message type). Optionally, it may include any property to be associated with the exchange.
     - For example, the initiator can include proposed deadlines for the context.
-  - For each credential the necessary data is added to allow the other party to provide these credentials. That at least involves specifying the desired schema, but may include other things, e.g. a proof request when working with (anonCreds)[https://github.com/hyperledger/ursa]
+  - For each credential the necessary data is added to allow the other party to provide these credentials. That at least involves specifying the desired schema, but may include other things, e.g. a proof request when working with [anonCreds](https://github.com/hyperledger/ursa)
   - An `attributes` property provides contextual information about the exchange and is not up for negotiation
   - Sample: 
   ```JSONC
@@ -220,7 +220,7 @@ As this chart might be hard to read at first, the following flowchart pictures t
 
 ## Example
 
-In this short example, we imagine two parties, the fashion seller Francis and their supplier of textiles, Sam. Francis wants to order new shirts from Sam. Beforehand, Francis wants to receive a product sample, verify the quality and then order a batch of shirts. For the whole process, Francis wants to observe and track the status of their order. Therefore, the contexts in the excgabge resemble the steps necessary to complete the order tracing process.
+In this short example, we imagine two parties, the fashion seller Francis and their supplier of textiles, Sam. Francis wants to order new shirts from Sam. Beforehand, Francis wants to receive a product sample, verify the quality and then order a batch of shirts. For the whole process, Francis wants to observe and track the status of their order. Therefore, the contexts in the exchange resemble the steps necessary to complete the order tracing process.
 !["Order Tracing"](./img/order_tracing_tutorial.svg "Order Tracing")
 
 ### Negotiation Phase  
