@@ -4,4 +4,4 @@ This repository contains all sorts of conceptual documents involving evan.networ
 
 ## Table of Content
 
-- [Negotiated Credential Exchange Protocol](./Negotiated&#32;Credential&#32;Exchange/negotiated_credential_exchange_protocol.md)
+- [Negotiated Credential Exchange](./Negotiated&#32;Credential&#32;Exchange/negotiated_credential_exchange.md)
